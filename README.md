@@ -10,3 +10,15 @@ I assume you've already got PG server on your local machine, so provide the cred
     export DB_USER=postgres
     export DB_HOST=localhost
 ```
+
+then: 
+```bash
+    rake db:create
+    rake db:migrate
+    rake db:seed
+```
+
+and eventually: 
+```bash
+    rails s
+```
