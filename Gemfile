@@ -39,8 +39,10 @@ gem 'bootsnap', require: false
 gem 'rswag-api'
 gem 'rswag-ui'
 
-gem 'kaminari'
 gem 'fast_jsonapi'
+gem 'kaminari'
+gem 'redis', '~> 5.0', '>= 5.0.6'
+gem 'sidekiq'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
