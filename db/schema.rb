@@ -10,9 +10,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_23_074327) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_23_111358) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "application_events", force: :cascade do |t|
+    t.integer "status", null: false
+    t.bigint "application_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["application_id"], name: "index_application_events_on_application_id"
+  end
+
+  create_table "applications", force: :cascade do |t|
+    t.string "candidate_name", null: false
+    t.bigint "job_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["job_id"], name: "index_applications_on_job_id"
+  end
 
   create_table "job_events", force: :cascade do |t|
     t.integer "status", default: 0, null: false
@@ -27,7 +43,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_23_074327) do
     t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "status", default: 0, null: false
+    t.integer "hired", default: 0, null: false
+    t.integer "rejected", default: 0, null: false
+    t.integer "ongoing", default: 0, null: false
   end
 
+  add_foreign_key "application_events", "applications"
+  add_foreign_key "applications", "jobs"
   add_foreign_key "job_events", "jobs"
 end

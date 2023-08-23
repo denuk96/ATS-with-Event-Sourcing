@@ -7,5 +7,7 @@ module JobRelated
     belongs_to :job
 
     enum status: %i[active deactivated]
+
+    after_save { |event| UpdateJobMetricsJob.perform_async(event.job_id) }
   end
 end
