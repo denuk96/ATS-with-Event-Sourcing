@@ -1,7 +1,10 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
-#   Character.create(name: "Luke", movie: movies.first)
+require 'factory_bot'
+require 'faker'
+
+Dir[Rails.root.join('spec/factories/**/*.rb')].sort.each { |f| require f }
+
+include FactoryBot::Syntax::Methods
+
+create_list(:job, 10, :with_active_event)
+create_list(:job, 5, :with_deactivated_event)
+create_list(:job, 5)

@@ -39,6 +39,9 @@ gem 'bootsnap', require: false
 gem 'rswag-api'
 gem 'rswag-ui'
 
+gem 'kaminari'
+gem 'fast_jsonapi'
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'database_cleaner'
@@ -49,6 +52,7 @@ group :development, :test do
   gem 'rails-controller-testing'
   gem 'rspec'
   gem 'rspec-rails', '~> 6.0', '>= 6.0.1'
+  gem 'rswag'
   gem 'rswag-specs'
   gem 'rubocop', require: false
   gem 'rubocop-performance', require: false

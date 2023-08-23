@@ -28,7 +28,46 @@ RSpec.configure do |config|
         }
       ],
       components: {
-        schemas: {}
+        schemas: {
+          job_properties: {
+            type: :object,
+            properties: {
+              id: { type: :string, example: '100' },
+              type: { type: :string, example: 'job' },
+              attributes: {
+                type: :object,
+                properties: {
+                  title: { type: :string, example: 'RoR dev' },
+                  description: { type: :string, example: 'job description' },
+                  status: { type: :string, example: 'active' }
+                },
+                required: %w[title description status]
+              }
+            },
+            required: %w[id type attributes]
+          },
+          job_single: {
+            type: :object,
+            properties: {
+              data: {
+                '$ref' => '#/components/schemas/job_properties'
+              }
+            },
+            required: %w[data]
+          },
+          jobs_array: {
+            type: :object,
+            properties: {
+              data: {
+                type: :array,
+                items: {
+                  '$ref' => '#/components/schemas/job_properties'
+                }
+              }
+            },
+            required: %w[data]
+          },
+        }
       }
     }
   }
