@@ -1,0 +1,87 @@
+---
+openapi: 3.0.1
+info:
+  title: ATS with Event Sourcing
+  version: 0.0.1
+servers:
+- url: http://localhost:3000
+components:
+  schemas:
+    job_properties:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '100'
+        type:
+          type: string
+          example: job
+        attributes:
+          type: object
+          properties:
+            title:
+              type: string
+              example: RoR dev
+            description:
+              type: string
+              example: job description
+            status:
+              type: string
+              example: active
+            hired:
+              type: integer
+              example: 2
+            rejected:
+              type: integer
+              example: 5
+            ongoing:
+              type: integer
+              example: 1
+          required:
+          - title
+          - description
+          - status
+          - hired
+          - rejected
+          - ongoing
+      required:
+      - id
+      - type
+      - attributes
+    job_single:
+      type: object
+      properties:
+        data:
+          "$ref": "#/components/schemas/job_properties"
+      required:
+      - data
+    jobs_array:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            "$ref": "#/components/schemas/job_properties"
+      required:
+      - data
+paths:
+  "/jobs":
+    get:
+      summary: Retrieve all jobs with their associated metrics
+      tags:
+      - Jobs
+      - index
+      parameters:
+      - name: page
+        in: query
+        required: false
+        description: Page number for pagination
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Jobs with metrics retrieved from second page
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/jobs_array"
