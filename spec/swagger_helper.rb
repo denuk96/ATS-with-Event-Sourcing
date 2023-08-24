@@ -49,15 +49,6 @@ RSpec.configure do |config|
             },
             required: %w[id type attributes]
           },
-          job_single: {
-            type: :object,
-            properties: {
-              data: {
-                '$ref' => '#/components/schemas/job_properties'
-              }
-            },
-            required: %w[data]
-          },
           jobs_array: {
             type: :object,
             properties: {
@@ -70,6 +61,36 @@ RSpec.configure do |config|
             },
             required: %w[data]
           },
+          application_properties: {
+            type: :object,
+            properties: {
+              id: { type: :string, example: '100' },
+              type: { type: :string, example: 'job' },
+              attributes: {
+                type: :object,
+                properties: {
+                  candidate_name: { type: :string, example: 'Denys Taradada' },
+                  status: { type: :string, example: 'active' },
+                  job_name: { type: :string, example: 'Ruby Dev' },
+                  first_interview_date: { type: :datetime, example: "" }
+                },
+                required: %w[candidate_name status job_name first_interview_date]
+              }
+            },
+            required: %w[id type attributes]
+          },
+          applications_array: {
+            type: :object,
+            properties: {
+              data: {
+                type: :array,
+                items: {
+                  '$ref' => '#/components/schemas/application_properties'
+                }
+              }
+            },
+            required: %w[data]
+          }
         }
       }
     }
