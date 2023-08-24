@@ -2,5 +2,5 @@
 
 class JobSerializer
   include FastJsonapi::ObjectSerializer
-  attributes :title, :description, :status
+  attributes :title, :description, :status, :hired, :rejected, :ongoing
 end

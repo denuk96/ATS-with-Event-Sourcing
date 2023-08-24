@@ -39,9 +39,12 @@ RSpec.configure do |config|
                 properties: {
                   title: { type: :string, example: 'RoR dev' },
                   description: { type: :string, example: 'job description' },
-                  status: { type: :string, example: 'active' }
+                  status: { type: :string, example: 'active' },
+                  hired: { type: :integer, example: 2 },
+                  rejected: { type: :integer, example: 5 },
+                  ongoing: { type: :integer, example: 1 }
                 },
-                required: %w[title description status]
+                required: %w[title description status hired rejected ongoing]
               }
             },
             required: %w[id type attributes]
