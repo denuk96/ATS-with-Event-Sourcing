@@ -37,8 +37,18 @@ class Application < ApplicationRecord
   # event creating triggers updating job metrics to avoid complex querying
   after_touch { |event| JobRelated::UpdateJobMetricsJob.perform_async(event.job_id) }
 
-  # make sense to create applications.status to avoid querying events table
+  # TODO: make sense to create applications.status to avoid querying events table
   def status
     events.max { |e| e.created_at.to_i }&.status || DEFAULT_STATUS # supposed to be preloaded
+  end
+
+  # TODO: create field to store first_interview_date in applications table to avoid searching in events
+  def first_interview_date
+    events.select { |e| e.status == 'interview' }
+          .min { |e| e.created_at.to_i }&.created_at
+  end
+
+  def job_name
+    job.title
   end
 end
