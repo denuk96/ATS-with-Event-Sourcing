@@ -6,6 +6,7 @@ class Job < ApplicationRecord
 
   validates :title, :description, presence: true
 
+  # Duplicate status in events to reduce calculations cost
   enum status: %i[active deactivated]
 
   def update_metrics!

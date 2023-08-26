@@ -34,8 +34,10 @@ class Application < ApplicationRecord
       .where(job_id:)
   }
 
-  after_touch { |event| UpdateJobMetricsJob.perform_async(event.job_id) }
+  # event creating triggers updating job metrics to avoid complex querying
+  after_touch { |event| JobRelated::UpdateJobMetricsJob.perform_async(event.job_id) }
 
+  # make sense to create applications.status to avoid querying events table
   def status
     events.max { |e| e.created_at.to_i }&.status || DEFAULT_STATUS # supposed to be preloaded
   end

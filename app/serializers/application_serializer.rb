@@ -6,7 +6,7 @@ class ApplicationSerializer
     object.job.title
   end
 
-  # TODO: optimise
+  # TODO: create field to store first_interview_date in applications table to avoid searching in events
   attribute :first_interview_date do |object|
     object.events
           .select { |e| e.status == 'interview' }
