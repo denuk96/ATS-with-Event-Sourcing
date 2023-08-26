@@ -79,13 +79,18 @@ components:
               type: string
               example: Ruby Dev
             first_interview_date:
-              type: datetime
-              example: ''
+              type: string
+              format: date-time
+              example: '2023-08-26T08:20:47.418Z'
+            notes_count:
+              type: integer
+              example: 5
           required:
           - candidate_name
           - status
           - job_name
           - first_interview_date
+          - notes_count
       required:
       - id
       - type

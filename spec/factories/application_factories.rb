@@ -23,5 +23,11 @@ FactoryBot.define do
         create(:application_event, :rejected, application: application)
       end
     end
+
+    trait :with_notes do
+      after(:create) do |application, _evaluator|
+        create_list(:application_notes, 5, application: application)
+      end
+    end
   end
 end

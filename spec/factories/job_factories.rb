@@ -17,11 +17,11 @@ FactoryBot.define do
 
     trait :with_applications do
       after(:create) do |job, _evaluator|
-        create_list(:application, 5, :with_hired_event, job: job)
+        create_list(:application, 5, :with_hired_event, :with_notes, job: job)
         create_list(:application, 5, :with_rejected_event, job: job)
 
         create_list(:application, 7, job: job) # applications with not statuses
-        create_list(:application, 8, :with_interview_event, job: job)
+        create_list(:application, 8, :with_interview_event, :with_notes, job: job)
       end
     end
   end

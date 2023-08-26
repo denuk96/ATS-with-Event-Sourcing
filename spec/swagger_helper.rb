@@ -72,9 +72,10 @@ RSpec.configure do |config|
                   candidate_name: { type: :string, example: 'Denys Taradada' },
                   status: { type: :string, example: 'active' },
                   job_name: { type: :string, example: 'Ruby Dev' },
-                  first_interview_date: { type: :datetime, example: "" }
+                  first_interview_date: { type: :string, format: 'date-time', example: '2023-08-26T08:20:47.418Z' },
+                  notes_count: { type: :integer, example: 5 }
                 },
-                required: %w[candidate_name status job_name first_interview_date]
+                required: %w[candidate_name status job_name first_interview_date notes_count]
               }
             },
             required: %w[id type attributes]

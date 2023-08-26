@@ -1,6 +1,6 @@
 class ApplicationSerializer
   include FastJsonapi::ObjectSerializer
-  attributes :candidate_name, :status
+  attributes :candidate_name, :status, :notes_count
 
   attribute :job_name do |object|
     object.job.title

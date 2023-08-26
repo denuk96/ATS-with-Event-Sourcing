@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_23_111358) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_26_081549) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -22,11 +22,20 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_23_111358) do
     t.index ["application_id"], name: "index_application_events_on_application_id"
   end
 
+  create_table "application_notes", force: :cascade do |t|
+    t.string "content", null: false
+    t.bigint "application_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["application_id"], name: "index_application_notes_on_application_id"
+  end
+
   create_table "applications", force: :cascade do |t|
     t.string "candidate_name", null: false
     t.bigint "job_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "notes_count", default: 0, null: false
     t.index ["job_id"], name: "index_applications_on_job_id"
   end
 
@@ -50,6 +59,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_23_111358) do
   end
 
   add_foreign_key "application_events", "applications"
+  add_foreign_key "application_notes", "applications"
   add_foreign_key "applications", "jobs"
   add_foreign_key "job_events", "jobs"
 end
