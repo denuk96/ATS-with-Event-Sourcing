@@ -1,5 +1,5 @@
 class Application < ApplicationRecord
-  DEFAULT_STATUS = 'applied'.freeze
+  DEFAULT_STATUS = :applied
 
   belongs_to :job
   has_many :events, class_name: 'ApplicationRelated::Event', dependent: :destroy
@@ -7,48 +7,33 @@ class Application < ApplicationRecord
 
   validates :candidate_name, presence: true
 
+  # Duplicates(denormalizes) status in events to reduce calculations cost
+  enum status: %i[applied interview hired rejected]
+
   scope :with_active_job, -> { joins(:job).where(jobs: { status: Job.statuses[:active] }) }
-  scope :hired, lambda { |job_id|
-    joins(:events)
-      .where(events: { status: ApplicationRelated::Event.statuses[:hired] })
-      .where(job_id:)
-  }
-  scope :rejected, lambda { |job_id|
-    joins(:events)
-      .where(events: { status: ApplicationRelated::Event.statuses[:rejected] })
-      .where(job_id:)
-  }
-  scope :ongoing, lambda { |job_id|
-    # Since each Application might have multiple events, we determine the application's status by its latest event.
-    # Therefore, we need to skip all except the last one
-    # However, it might be more reasonable to add a 'status' field to the 'applications' table
-    # and update it asynchronously using the Event#after_save callback, similar to how Job#update_metrics! is implemented
-    # and then simply calc by statuses avoiding complex query like below
-    latest_event_subquery = ApplicationRelated::Event.select('DISTINCT ON(application_id) application_id, status')
-                                                      .order('application_id, created_at DESC')
-    left_joins(:events)
-      .joins("LEFT JOIN (#{latest_event_subquery.to_sql}) AS latest_events
-                        ON applications.id = latest_events.application_id")
-      .where('latest_events.application_id IS NULL OR latest_events.status NOT IN (?)',
-             [ApplicationRelated::Event.statuses[:rejected], ApplicationRelated::Event.statuses[:hired]])
-      .where(job_id:)
-  }
+  scope :hired, ->(job_id) { where(status: statuses[:hired]).where(job_id:) }
+  scope :rejected, ->(job_id) { where(status: statuses[:rejected]).where(job_id:) }
+  scope :ongoing, ->(job_id) { where.not(status: [statuses[:hired], statuses[:rejected]]).where(job_id:) }
 
-  # event creating triggers updating job metrics to avoid complex querying
-  after_touch { |event| JobRelated::UpdateJobMetricsJob.perform_async(event.job_id) }
-
-  # TODO: make sense to create applications.status to avoid querying events table
-  def status
-    events.max { |e| e.created_at.to_i }&.status || DEFAULT_STATUS # supposed to be preloaded
-  end
+  # event creating triggers updating job metrics and applications status
+  # to avoid complex querying
+  after_touch { update_status! }
 
   # TODO: create field to store first_interview_date in applications table to avoid searching in events
   def first_interview_date
-    events.select { |e| e.status == 'interview' }
+    events.select { |e| e.status == 'interview' } # supposed to be preloaded(avoiding n+1)
           .min { |e| e.created_at.to_i }&.created_at
   end
 
   def job_name
     job.title
+  end
+
+  private
+
+  def update_status!
+    current_status = events.last&.status || DEFAULT_STATUS
+    update!(status: current_status)
+    JobRelated::UpdateJobMetricsJob.perform_async(application.job_id)
   end
 end
